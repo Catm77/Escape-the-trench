@@ -1,0 +1,50 @@
+{
+  "player": {
+    "name": "Player",
+    "stats": {
+      "health": 100,
+      "max_health": 100,
+      "attack": 10,
+      "defense": 10
+    },
+    "stage": 1
+  },
+  "enemies": [
+    {
+      "name": "Twisted Grunt",
+      "stats": {
+        "health": 50,
+        "max_health": 50,
+        "attack": 10,
+        "defense": 5
+      }
+    },
+    {
+      "name": "Twisted Corpsman",
+      "stats": {
+        "health": 100,
+        "max_health": 100,
+        "attack": 20,
+        "defense": 10
+      }
+    },
+    {
+      "name": "Twisted Officer",
+      "stats": {
+        "health": 150,
+        "max_health": 150,
+        "attack": 30,
+        "defense": 0
+      }
+    },
+    {
+      "name": "Twisted Raider",
+      "stats": {
+        "health": 200,
+        "max_health": 200,
+        "attack": 15,
+        "defense": 15
+      }
+    }
+  ]
+}
