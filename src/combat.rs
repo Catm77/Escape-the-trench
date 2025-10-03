@@ -33,29 +33,112 @@ pub fn combat_loop(player: &mut Player, enemy: &mut Enemy) -> bool
         if player_action_input == "1"
         {
             let mut attack_check_rng = rand::rng();
-            let attack_check :f64= attack_check_rng.random();
+            let attack_check :i32 = attack_check_rng.random_range(1..=4);
 
-            if attack_check <= 0.5
-            {
-                let attack: i32 = player.stats.attack - enemy.stats.defense;
-                enemy.stats.health -= attack;
+            println!("You rolled a {}", attack_check);
 
-                let attack_message = encounters::get_random_attack_message_player(&enemy.name);
-                println!("{}", attack_message);
-                println!("You dealt {} damage", attack);
-                println!("Enemy has {} health left", enemy.stats.health);
-                thread::sleep(Duration::from_secs(1));
-            }
-            else
+            match attack_check 
             {
-                println!("Attack failed try again!");
-                thread::sleep(Duration::from_secs(1));
-                //probably going to make a random failed attack message in the future
+                1 => 
+                {
+                    println!("Attack failed try again!");
+
+                    thread::sleep(Duration::from_secs(1));
+                },
+
+                2 => 
+                {
+                    let attack_damage: i32 = player.stats.attack / 2;
+                    let mut attack: i32 = attack_damage - enemy.stats.defense;
+
+                    if attack < 0 
+                    {
+                        attack = 0;
+                    }
+
+                    enemy.stats.health -= attack;
+
+                    if enemy.stats.health < 0
+                    {
+                        enemy.stats.health = 0;
+                    }
+
+                    let attack_message: String = encounters::get_random_attack_message_player(&enemy.name);
+
+                    println!("{}", attack_message);
+                    println!("You dealt {} damage", attack);
+                    println!("Enemy has {} health left", enemy.stats.health);
+                    
+                    thread::sleep(Duration::from_secs(1));
+                },
+
+                3 =>
+                {
+                    let mut attack: i32 = player.stats.attack - enemy.stats.defense;
+
+                    if attack < 0
+                    {
+                        attack = 0;
+                    }
+
+                    enemy.stats.health -= attack;
+
+                    if enemy.stats.health < 0
+                    {
+                        enemy.stats.health = 0;
+                    }
+
+                    let attack_message: String = encounters::get_random_attack_message_player(&enemy.name);
+
+                    println!("{}", attack_message);
+                    println!("You dealt {} damage", attack);
+                    println!("Enemy has {} health left", enemy.stats.health);
+                },
+
+                4 =>
+                {
+                    let attack_damage: i32 = player.stats.attack * 2;
+                    let mut attack: i32 = attack_damage - enemy.stats.defense;
+
+                    if attack < 0
+                    {
+                        attack = 0;
+                    }
+
+                    enemy.stats.health -= attack;
+
+                    if enemy.stats.health < 0
+                    {
+                        enemy.stats.health = 0;
+                    }
+
+                    let attack_message: String = encounters::get_random_attack_message_player(&enemy.name);
+
+                    println!("CRITICAL HIT!");
+                    println!("{}", attack_message);
+                    println!("You dealt {} damage", attack);
+                    println!("Enemy has {} health left", enemy.stats.health);
+                },
+
+                _ => 
+                {
+                    println!("Code error dice roll not in roll range");
+                }
             }
         }
         else if player_action_input == "2"
         {
-            //rest and heal up
+            let heal_amount = 10;
+
+            player.stats.health += heal_amount;
+
+            if player.stats.health > player.stats.max_health
+            {
+                player.stats.health = player.stats.max_health;
+            }
+
+            println!("You healed {}", heal_amount);
+            println!("Your health is now {}", player.stats.health);
         }
         else if player_action_input == "3"
         {
@@ -85,24 +168,88 @@ pub fn combat_loop(player: &mut Player, enemy: &mut Enemy) -> bool
         // Enemy attack
         println!();
         println!("{}'s turn", enemy.name);
+
         thread::sleep(Duration::from_secs(1));
 
         let mut enemy_attack_check_rng = rand::rng();
-        let enemy_attack_check :f64= enemy_attack_check_rng.random();
+        let enemy_attack_check :i32= enemy_attack_check_rng.random_range(1..=4);
 
-        if enemy_attack_check < 0.5
+        match enemy_attack_check 
         {
-            let enemy_attack: i32 = enemy.stats.attack - player.stats.defense;
-            player.stats.health -= enemy_attack;
+            1 =>
+            {
+                println!("Enemy attack fialed");
 
-            println!("{}'s attack dealt {} damage",enemy.name, enemy_attack);
-            println!("You have {} health left", player.stats.health);
-            thread::sleep(Duration::from_secs(1));
-        }
-        else 
-        {
-            println!("{}'s attack failed", enemy.name);
-            thread::sleep(Duration::from_secs(1));
+                thread::sleep(Duration::from_secs(1));
+            },
+            2 =>
+            {
+                let enemy_attack_damage: i32 = enemy.stats.attack / 2;
+                let mut enemy_attack: i32 = enemy_attack_damage - player.stats.defense;
+
+                if enemy_attack < 0 
+                {
+                    enemy_attack = 0;
+                }
+
+                player.stats.health -= enemy_attack;
+
+                if player.stats.health < 0
+                {
+                    player.stats.health = 0;
+                }
+
+                println!("{}'s attack dealt {} damage",enemy.name, enemy_attack);
+                println!("You have {} health left", player.stats.health);
+
+                thread::sleep(Duration::from_secs(1));
+            },
+            3 =>
+            {
+                let mut enemy_attack: i32 = enemy.stats.attack - player.stats.defense;
+
+                if enemy_attack < 0 
+                {
+                    enemy_attack = 0;
+                }
+
+                player.stats.health -= enemy_attack;
+
+                if player.stats.health < 0
+                {
+                    player.stats.health = 0;
+                }
+
+                println!("{}'s attack dealt {} damage",enemy.name, enemy_attack);
+                println!("You have {} health left", player.stats.health);
+            },
+            4 => 
+            {
+                let enemy_attack_damage: i32 = enemy.stats.attack * 2;
+                let mut enemy_attack: i32 = enemy_attack_damage - player.stats.defense;
+
+                if enemy_attack < 0 
+                {
+                    enemy_attack = 0;
+                }
+
+                player.stats.health -= enemy_attack;
+
+                if player.stats.health < 0
+                {
+                    player.stats.health = 0;
+                }
+
+                println!("CRITICAL HIT!");
+                println!("{}'s attack dealt {} damage",enemy.name, enemy_attack);
+                println!("You have {} health left", player.stats.health);
+
+                thread::sleep(Duration::from_secs(1));
+            },
+            _ =>
+            {
+
+            }
         }
 
         if player.stats.health <= 0

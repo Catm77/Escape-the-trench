@@ -2,12 +2,14 @@
   "player": {
     "name": "Player",
     "stats": {
-      "health": 100,
+      "health": 0,
       "max_health": 100,
-      "attack": 10,
-      "defense": 10
+      "attack": 25,
+      "defense": 10,
+      "default_attack": 20,
+      "default_defense": 10
     },
-    "stage": 1
+    "stage": 4
   },
   "enemies": [
     {
@@ -16,7 +18,9 @@
         "health": 50,
         "max_health": 50,
         "attack": 10,
-        "defense": 5
+        "defense": 5,
+        "default_attack": 10,
+        "default_defense": 5
       }
     },
     {
@@ -25,7 +29,9 @@
         "health": 100,
         "max_health": 100,
         "attack": 20,
-        "defense": 10
+        "defense": 10,
+        "default_attack": 20,
+        "default_defense": 10
       }
     },
     {
@@ -34,7 +40,9 @@
         "health": 150,
         "max_health": 150,
         "attack": 30,
-        "defense": 0
+        "defense": 0,
+        "default_attack": 30,
+        "default_defense": 0
       }
     },
     {
@@ -43,7 +51,9 @@
         "health": 200,
         "max_health": 200,
         "attack": 15,
-        "defense": 15
+        "defense": 15,
+        "default_attack": 15,
+        "default_defense": 15
       }
     }
   ]

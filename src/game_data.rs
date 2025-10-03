@@ -8,6 +8,8 @@ pub struct Stats
     pub max_health: i32,
     pub attack: i32,
     pub defense: i32,
+    pub default_attack: i32,
+    pub default_defense: i32,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

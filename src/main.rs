@@ -114,18 +114,26 @@ fn display_ending(player: &game_data::Player)
         }
         let death_ending: String = get_death_message_per_stage(player.stage);
         println!();
+
         println!("{}", death_ending);
+
         thread::sleep(Duration::from_secs(10));
     }
     if player.stage == WIN_STAGE
     {
-        //win logic
+        println!();
+
+        let win_message = encounters::get_win_message();
+
+        println!("{}", win_message);
     }
 }
 
 fn game_loop(mut game_data: game_data::GameData)
 {
     let mut player_is_alive = game_data.player.stats.health > 0;
+
+    let mut heal_times = 3;
 
     if game_data.player.stage == 1 && game_data.player.stats.health == 100 
     {
@@ -223,6 +231,8 @@ fn game_loop(mut game_data: game_data::GameData)
                 {
                     game_data.player.stage += 1;
 
+                    heal_times = 3;
+
                     println!("You have advanced to stage {}. Keep it up!", game_data.player.stage);
                 }
             }
@@ -233,6 +243,8 @@ fn game_loop(mut game_data: game_data::GameData)
                 thread::sleep(Duration::from_secs(1));
 
                 game_data.player.stage += 1;
+
+                heal_times = 3;
 
                 println!("You have advanced to stage {}. Keep it up!", game_data.player.stage);
             }
@@ -253,6 +265,8 @@ fn game_loop(mut game_data: game_data::GameData)
 
                 game_data.player.stage += 1;
 
+                heal_times = 3;
+
                 println!("You have advanced to stage {}. Keep it up!", game_data.player.stage);
 
             }
@@ -267,6 +281,8 @@ fn game_loop(mut game_data: game_data::GameData)
                 thread::sleep(Duration::from_secs(1));
 
                 game_data.player.stage += 1;
+
+                heal_times = 3;
 
                 println!("You have advanced to stage {}. Keep it up!", game_data.player.stage);
             }
@@ -288,21 +304,36 @@ fn game_loop(mut game_data: game_data::GameData)
         {
             let heal_amount = 10;
 
-            game_data.player.stats.health += heal_amount;
-
-            if game_data.player.stats.health > game_data.player.stats.max_health
+            if heal_times > 0
             {
-                game_data.player.stats.health = game_data.player.stats.max_health;
-            }
+                game_data.player.stats.health += heal_amount;
 
-            println!("You rest for a moment, gaining {} health. Health: {}", heal_amount, game_data.player.stats.health);
+                if game_data.player.stats.health > game_data.player.stats.max_health
+                {
+                    game_data.player.stats.health = game_data.player.stats.max_health;
+                }
+
+                heal_times -= 1;
+
+                println!("Times you can rest left: {}", heal_times);
+
+                println!("You rest for a moment, gaining {} health. Health: {}", heal_amount, game_data.player.stats.health);
  
-            if let Err(e) = save_game_data(&game_data) 
-            {
-                eprintln!("Failed to save game data: {}", e);
-            }
+                if let Err(e) = save_game_data(&game_data) 
+                {
+                    eprintln!("Failed to save game data: {}", e);
+                }
 
-            thread::sleep(Duration::from_secs(1));
+                thread::sleep(Duration::from_secs(1));
+            }
+            else if heal_times == 0 
+            {
+                println!("You can't rest right now get moving!");
+            }
+            else 
+            {
+                println!("Something happened this is an error idk what happened");
+            }
         }
 
         else if choice_input == "3"
@@ -388,6 +419,10 @@ fn main()
                                     {
                                         default_data.player.stats.health = default_data.player.stats.max_health;
 
+                                        default_data.player.stats.attack = default_data.player.stats.default_attack;
+
+                                        default_data.player.stats.defense = default_data.player.stats.default_defense;
+
                                         default_data.player.stage = 1;
 
                                         game_loop(default_data);
@@ -426,6 +461,10 @@ fn main()
                             Ok(mut default_data) =>
                             {
                                 default_data.player.stats.health = default_data.player.stats.max_health;
+
+                                default_data.player.stats.attack = default_data.player.stats.default_attack;
+
+                                default_data.player.stats.defense = default_data.player.stats.default_defense;
 
                                 default_data.player.stage = 1;
 
